@@ -80,8 +80,12 @@ def get_file_as_uri_data(file: Path) -> str:
     suffix = file.suffix.lower()
     if suffix in (".jpg", ".jpeg"):
         mimetype = "image/jpeg"
+    elif suffix == ".gif":
+        mimetype = "image/gif"
     elif suffix == ".png":
         mimetype = "image/png"
+    elif suffix == ".svg":
+        mimetype = "image/svg+xml"
     elif suffix == ".css":
         mimetype = "text/css"
     else:
@@ -112,7 +116,12 @@ def main():
         filenames_by_ext[f.suffix].append(f)
 
     files_to_inline = [fname
-                       for ext in (".jpg", ".jpeg", ".png", ".css")
+                       for ext in (".css",
+                                   ".gif",
+                                   ".jpeg",
+                                   ".jpg",
+                                   ".png",
+                                   ".svg")
                        for fname in filenames_by_ext[ext]]
 
     zip_buffer = io.BytesIO()
