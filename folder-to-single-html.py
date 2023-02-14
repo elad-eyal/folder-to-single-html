@@ -161,6 +161,7 @@ def main():
                 fname = relpath.parent / Path(url)
                 if fname in files_to_inline:
                     return pre + get_file_as_uri_data(fname) + post
+                return "".join(m.groups())
 
             html = rewrite_attributes(html, "img", "src", relpath, callback=callback)
             html = rewrite_attributes(html, "link", "href", relpath, callback=callback)
