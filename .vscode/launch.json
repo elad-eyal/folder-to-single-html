@@ -15,8 +15,7 @@
                 "test/Lawyer-Website-Example/",
                 "-o",
                 "output.html",
-                "--start-page",
-                "lawyerWebsite.html"
+                "-P"
             ]
         }
     ]
