@@ -100,6 +100,10 @@ def get_file_text(file: Path) -> str:
     return (g_source_directory / file).read_text()
 
 
+def get_file_bytes(file: Path):
+    return (g_source_directory / file).read_bytes()
+
+
 @lru_cache(maxsize=None)
 def get_file_as_uri_data(file: Path) -> str:
     suffix = file.suffix.lower()
@@ -113,10 +117,12 @@ def get_file_as_uri_data(file: Path) -> str:
         mimetype = "image/svg+xml"
     elif suffix == ".css":
         mimetype = "text/css"
+    elif suffix == ".woff":
+        mimetype = "application/font-woff2"
     else:
         fail(f"Problem converting {file.name}")
 
-    t = (g_source_directory / file).read_bytes()
+    t = get_file_bytes(file)
 
     return f"data:{mimetype};base64,{base64.b64encode(t).decode()}"
 
@@ -175,6 +181,14 @@ def main():
             html = rewrite_attributes(html, "link", "href", relpath, callback=callback)
 
             zip.writestr(str(relpath), html)
+
+        # TODO not sure if embedding JS is helpful or needed
+        for relpath in filenames_by_ext[".js"]:
+            content = get_file_text(relpath)
+            zip.writestr(str(relpath), content)
+
+        for relpath in filenames_by_ext[".woff"]:
+            zip.writestr(str(relpath) + ".data-uri", get_file_as_uri_data(relpath))
 
     if g_debug_zip:
         Path("debug.zip").write_bytes(zip_buffer.getvalue())
