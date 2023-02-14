@@ -30,10 +30,19 @@ def parse_options():
     parser.add_argument(
         "--start-page", "-p", type=Path, default="index.html", help="TODO"
     )
+    parser.add_argument(
+        "--start-page-auto",
+        "-P",
+        action="store_true",
+        help="Pick any HTML file as a start page",
+    )
     args = parser.parse_args()
     g_source_directory = args.__dict__["source-directory"]
     g_output_filename = args.output_filename
-    g_start_page = args.start_page
+    if args.start_page_auto:
+        g_start_page = None
+    else:
+        g_start_page = args.start_page
 
 
 def fail(reason: str):
@@ -111,16 +120,26 @@ def outfile() -> TextIO:
 
 
 def main():
+    global g_source_directory
+    global g_output_filename
+    global g_start_page
+
     parse_options()
 
     all_filenames = list(get_all_filenames())
 
-    if g_start_page not in all_filenames:
-        fail(f"There is no {g_start_page} in the directory {g_source_directory}.")
-
     filenames_by_ext: Dict(List(Path)) = defaultdict(list)
     for f in all_filenames:
         filenames_by_ext[f.suffix].append(f)
+
+    if not filenames_by_ext[".html"]:
+        fail(f"There are no HTML files in the directory {g_source_directory}")
+
+    if g_start_page is None:
+        g_start_page = sorted(filenames_by_ext[".html"])[0]
+
+    if g_start_page not in all_filenames:
+        fail(f"There is no {g_start_page} in the directory {g_source_directory}.")
 
     files_to_inline = [
         fname
