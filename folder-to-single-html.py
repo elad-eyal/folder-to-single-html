@@ -46,7 +46,7 @@ def parse_options():
 
 
 def fail(reason: str):
-    print(reason)
+    print(reason, file=sys.stderr)
     exit(6)
 
 
