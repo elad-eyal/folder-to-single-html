@@ -9,12 +9,14 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, TextIO
 
+g_debug_zip: bool
 g_source_directory: Path
 g_output_filename: Path
 g_start_page: Path
 
 
 def parse_options():
+    global g_debug_zip
     global g_source_directory
     global g_output_filename
     global g_start_page
@@ -36,7 +38,13 @@ def parse_options():
         action="store_true",
         help="Pick any HTML file as a start page",
     )
+    parser.add_argument(
+        "--debug-zip",
+        action="store_true",
+        help="For debugging, create a local copy of the embedded zip",
+    )
     args = parser.parse_args()
+    g_debug_zip = args.debug_zip
     g_source_directory = args.__dict__["source-directory"]
     g_output_filename = args.output_filename
     if args.start_page_auto:
@@ -167,6 +175,9 @@ def main():
             html = rewrite_attributes(html, "link", "href", relpath, callback=callback)
 
             zip.writestr(str(relpath), html)
+
+    if g_debug_zip:
+        Path("debug.zip").write_bytes(zip_buffer.getvalue())
 
     compiled = f"""
       <script type="text/javascript">

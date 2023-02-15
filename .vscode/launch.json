@@ -15,7 +15,8 @@
                 "test/Lawyer-Website-Example/",
                 "-o",
                 "output.html",
-                "-P"
+                "-P",
+                "--debug-zip"
             ]
         }
     ]
