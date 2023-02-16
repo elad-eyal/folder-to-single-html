@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v3
       - id: set-dirs
         run: |
-          echo "dir=$(test/test.sh --list-tests | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo "dir=$(test/test.sh --list-tests-json)" >> $GITHUB_OUTPUT
 
   test:
     runs-on: ubuntu-latest
