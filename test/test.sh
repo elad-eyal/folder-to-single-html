@@ -38,7 +38,7 @@ HOSTNAME=$(command ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 mkdir -p artifacts/$1
 rm -fr artifacts/$1
 mkdir -p artifacts/$1
-docker run -v $PWD/src/$1:/src:ro $IMAGE -P > artifacts/$1/$1_output.html
+docker run -v $PWD/src/$1:/in:ro $IMAGE -P > artifacts/$1/$1_output.html
 
 docker rm -f httpd || true
 docker run -d --name httpd -p 1300:3000 -v $PWD:/home/static/www:ro lipanski/docker-static-website
