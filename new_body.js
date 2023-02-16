@@ -29,12 +29,19 @@ var contentZip = "{base64_zipfile}";
 
             contentDom.innerHTML = content;
 
+            let numStyleSheets = window.document.styleSheets.length;
+
             // Import stylesheets
             contentDom
-              .querySelectorAll("head link[rel=stylesheet]")
+              .querySelectorAll("head link[rel^=stylesheet]")
               .forEach(function (stylesheet) {
                 window.document.head.append(document.importNode(stylesheet));
               });
+
+            // Disable any original stylesheets
+            for (let n = 0; n < numStyleSheets; n++) {
+              window.document.styleSheets[n].disabled = true;
+            }
 
             // Import scripts
             contentDom
