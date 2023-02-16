@@ -12,7 +12,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "test/Lawyer-Website-Example/",
+                "test/src/Lawyer-Website-Example/",
                 "-o",
                 "output.html",
                 "-P",

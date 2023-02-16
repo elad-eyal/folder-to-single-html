@@ -2,8 +2,8 @@
 	path = jszip
 	url = https://github.com/Stuk/jszip.git
 [submodule "example-webpage"]
-	path = test/example-webpage
+	path = test/src/example-webpage
 	url = https://github.com/seanmiles/example-webpage.git
 [submodule "Lawyer-Website-Example"]
-	path = test/Lawyer-Website-Example
+	path = test/src/Lawyer-Website-Example
 	url = https://github.com/Zlaya19/Lawyer-Website-Example.git
