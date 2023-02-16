@@ -27,7 +27,8 @@ fi
 cd "$(dirname "$0")"
 
 if [[ "$1" == "--list-tests" ]]; then
-    find * -maxdepth 0 -type d ! -name artifacts
+    cd src
+    find * -maxdepth 0 -type d
     exit 0
 fi
 
@@ -37,7 +38,7 @@ HOSTNAME=$(command ip route get 1 | sed -n 's/^.*src \([0-9.]*\) .*$/\1/p')
 mkdir -p artifacts/$1
 rm -fr artifacts/$1
 mkdir -p artifacts/$1
-docker run -v $PWD/$1:/src:ro $IMAGE -P > artifacts/$1/$1_output.html
+docker run -v $PWD/src/$1:/src:ro $IMAGE -P > artifacts/$1/$1_output.html
 
 docker rm -f httpd || true
 docker run -d --name httpd -p 1300:3000 -v $PWD:/home/static/www:ro lipanski/docker-static-website
@@ -48,7 +49,7 @@ while IFS= read -r -d '' filename
 do
     REF_FILENAME=artifacts/$1/${filename}_ref
     DUT_FILENAME=artifacts/$1/${filename}_dut
-    docker run -v ${PWD}:/usr/src/app/out --rm nevermendel/chrome-headless-screenshots "http://${HOSTNAME}:1300/www/$1/${filename}" --filename ${REF_FILENAME} --delay 3000
+    docker run -v ${PWD}:/usr/src/app/out --rm nevermendel/chrome-headless-screenshots "http://${HOSTNAME}:1300/www/src/$1/${filename}" --filename ${REF_FILENAME} --delay 3000
     docker run -v ${PWD}:/usr/src/app/out --rm nevermendel/chrome-headless-screenshots "http://${HOSTNAME}:1300/www/artifacts/$1/$1_output.html?path=${filename}" --filename ${DUT_FILENAME} --delay 3000
     if ! [[ -s $REF_FILENAME.png  ]]; then
         echo "Unable to create $REF_FILENAME" >> /dev/stderr
@@ -63,5 +64,5 @@ do
         exit 4
     fi
     
-done < <(cd $1 && find * -type f -name '*.html' -print0)
+done < <(cd src/$1 && find * -type f -name '*.html' -print0)
 
